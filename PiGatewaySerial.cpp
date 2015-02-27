@@ -28,6 +28,7 @@
 #include <poll.h>
 
 #include <RF24.h>
+#include <RF24ComVUsb.h>
 #include <MyGateway.h>
 #include <Version.h>
 
@@ -37,8 +38,8 @@ volatile static int running = 1;
 /* PTY file descriptors */
 int pty_master = -1;
 int pty_slave = -1;
-
-
+RF24ComVUsb com_dev;
+RF24Frontend rf24_device(com_dev);
 /*
  * handler for SIGINT signal
  */
@@ -99,7 +100,7 @@ int main(int argc, char **argv)
 	signal(SIGINT, handle_sigint);
 
 	/* create MySensors Gateway object */
-	gw = new MyGateway(RPI_V2_GPIO_P1_22, BCM2835_SPI_CS0, BCM2835_SPI_SPEED_8MHZ, 60);
+	gw = new MyGateway(rf24_device, 60);
 	if (gw == NULL)
 	{
 		printf("Could not create MyGateway! (%d) %s\n", errno, strerror(errno));
@@ -178,8 +179,8 @@ int main(int argc, char **argv)
 
 cleanup:
 	printf("Exiting...\n");
-	if (gw)
-		delete(gw);
+	//if (gw)
+	//	delete(gw);
 	(void) unlink(serial_tty);
 	return status;
 }

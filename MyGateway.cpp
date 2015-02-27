@@ -31,7 +31,7 @@ boolean buttonTriggeredInclusion;
 boolean inclusionMode; // Keeps track on inclusion mode
 
 #ifdef __Raspberry_Pi
-MyGateway::MyGateway(uint8_t _cepin, uint8_t _cspin, uint32_t spispeed, uint8_t _inclusion_time ) : MySensor(_cepin, _cspin, spispeed ) {
+MyGateway::MyGateway(RF24 &rf24_driver, uint8_t _inclusion_time ) : MySensor(rf24_driver) {
     inclusionTime = _inclusion_time;
 }
 #else
@@ -88,9 +88,9 @@ void MyGateway::begin(rf24_pa_dbm_e paLevel, uint8_t channel, rf24_datarate_e da
 
 	// Start up the radio library
 	setupRadio(paLevel, channel, dataRate);
-	RF24::openReadingPipe(WRITE_PIPE, BASE_RADIO_ID);
-	RF24::openReadingPipe(CURRENT_NODE_PIPE, BASE_RADIO_ID);
-	RF24::startListening();
+	rf24.openReadingPipe(WRITE_PIPE, BASE_RADIO_ID);
+	rf24.openReadingPipe(CURRENT_NODE_PIPE, BASE_RADIO_ID);
+	rf24.startListening();
 #ifndef __Raspberry_Pi
 	// Add led timer interrupt
     MsTimer2::set(300, ledTimersInterrupt);

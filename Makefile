@@ -1,5 +1,6 @@
 CC=g++
-CCFLAGS=-Wall -Ofast -mfpu=vfp -lpthread -g -D__Raspberry_Pi -mfloat-abi=hard -march=armv6zk -mtune=arm1176jzf-s
+#CCFLAGS=-Wall -Ofast -mfpu=vfp -lpthread -g -D__Raspberry_Pi -mfloat-abi=hard -march=armv6zk -mtune=arm1176jzf-s
+CCFLAGS=-Wall -Ofast -lpthread -g -D__Raspberry_Pi
 
 # define all programs
 PROGRAMS = MyGateway MySensor MyMessage PiEEPROM
@@ -18,8 +19,7 @@ GATEWAY_DEPS = ${GATEWAY:=.h}
 GATEWAY_SERIAL_DEPS = ${GATEWAY_SERIAL:=.h}
 DEPS = ${PROGRAMS:=.h}
 
-RF24H = librf24-bcm/
-CINCLUDE=-I. -I${RF24H}
+CINCLUDE=-I. -IRF24Remote/RF24Frontend -IRF24Remote/RF24Remote -IRF24Remote/RF24
 
 
 all: ${GATEWAY} ${GATEWAY_SERIAL}
@@ -28,10 +28,10 @@ all: ${GATEWAY} ${GATEWAY_SERIAL}
 	${CC} -c -o $@ $< ${CCFLAGS} ${CINCLUDE}
 
 ${GATEWAY}: ${OBJS} ${GATEWAY_OBJS}
-	${CC} -o $@ ${OBJS} ${GATEWAY_OBJS} ${CCFLAGS} ${CINCLUDE} -lrf24-bcm
+	${CC} -o $@ ${OBJS} ${GATEWAY_OBJS} ${CCFLAGS} ${CINCLUDE} -lrf24frontend -lusb
 
 ${GATEWAY_SERIAL}: ${OBJS} ${GATEWAY_SERIAL_OBJS}
-	${CC} -o $@ ${OBJS} ${GATEWAY_SERIAL_OBJS} ${CCFLAGS} ${CINCLUDE} -lrf24-bcm -lutil
+	${CC} -o $@ ${OBJS} ${GATEWAY_SERIAL_OBJS} ${CCFLAGS} ${CINCLUDE} -lrf24frontend -lutil -lusb
 
 clean:
 	rm -rf $(PROGRAMS) $(GATEWAY) $(GATEWAY_SERIAL) $(BUILDDIR)/${OBJS}

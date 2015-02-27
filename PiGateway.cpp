@@ -12,8 +12,11 @@
 #include <stdio.h>
 #include "MyGateway.h"
 #include <RF24.h>
+#include <RF24ComVUsb.h>
 
 MyGateway *gw;
+RF24ComVUsb com_vusb;
+RF24Frontend rf24_device(com_vusb);
 
 void msgCallback(char *msg){
 	printf("[CALLBACK]%s", msg);
@@ -23,7 +26,7 @@ void msgCallback(char *msg){
 void setup(void)
 {
 	printf("Starting Gateway...\n");
-	gw = new MyGateway(RPI_V2_GPIO_P1_22, RPI_V2_GPIO_P1_24, BCM2835_SPI_SPEED_8MHZ, 30000);
+	gw = new MyGateway(rf24_device, 30000);
 	
 	if (gw == NULL)
     {

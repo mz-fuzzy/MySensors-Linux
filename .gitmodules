@@ -1,0 +1,3 @@
+[submodule "RF24Remote"]
+	path = RF24Remote
+	url = git@github.com:mz-fuzzy/RF24Remote.git

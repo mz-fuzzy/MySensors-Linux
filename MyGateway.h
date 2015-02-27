@@ -44,7 +44,7 @@ class MyGateway : public MySensor
 		*
 		*/
 #ifdef __Raspberry_Pi
-		MyGateway(uint8_t _cepin, uint8_t _cspin, uint32_t spispeed, uint8_t _inclusion_time );
+		MyGateway(RF24 &rf24_driver, uint8_t _inclusion_time );
 #else
 		MyGateway(uint8_t _cepin=DEFAULT_CE_PIN, uint8_t _cspin=DEFAULT_CS_PIN, uint8_t _inclusion_time = 1, uint8_t _inclusion_pin = 3, uint8_t _rx=6, uint8_t _tx=5, uint8_t _er=4);
 #endif
